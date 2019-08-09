@@ -1,7 +1,9 @@
 package bchain
 
 import (
+	"fmt"
 	"github.com/Anirudh9794/myblockchain/internal/pkg/hash"
+	"strings"
 	"time"
 )
 
@@ -10,15 +12,44 @@ type Block struct {
 	LastHash string
 	Data string
 	Timestamp string
+	Nonce int
+	Difficulty int
 }
 
-func createBlock(data string, lastBlock Block) Block {
+func adjustDifficulty(lastBlock Block) int {
+	parsedTime, _ := time.Parse(time.ANSIC, lastBlock.Timestamp)
+	timeDiff := time.Since(parsedTime).Seconds() * 1e3
+	difficulty := lastBlock.Difficulty
+
+	if timeDiff > AVERAGE_MINIG_TIME {
+		return difficulty - 1
+	}
+
+	return difficulty + 1
+}
+
+
+func mineBlock(data string, lastBlock Block) Block {
+	timestamp := time.Now().UTC().Format(time.ANSIC)
+	nonce := 0
+	h := ""
+	difficulty := lastBlock.Difficulty
+
+	for ;!strings.HasPrefix(hash.HexToBinary(h), strings.Repeat("0", difficulty)); nonce += 1 {
+		timestamp = time.Now().UTC().Format(time.ANSIC)
+
+		h = hash.CreateHash(data ,fmt.Sprintf("%d", nonce), lastBlock.Hash, timestamp)
+
+		difficulty = adjustDifficulty(lastBlock)
+	}
 
 	newBlock := Block{
 		Data: data,
 		LastHash: lastBlock.Hash,
-		Timestamp: time.Now().String(),
-		Hash: hash.CreateHash(data, lastBlock.Hash),
+		Timestamp: timestamp,
+		Hash: h,
+		Nonce: nonce,
+		Difficulty: difficulty,
 	}
 
 	return newBlock

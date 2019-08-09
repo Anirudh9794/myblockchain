@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"encoding/hex"
 )
 
 func CreateHash(vals ...string) string {
@@ -14,7 +15,24 @@ func CreateHash(vals ...string) string {
 
 	hasher := sha256.Sum256([]byte(v))
 
-	hash := fmt.Sprintf("%x", hasher)
+	return fmt.Sprintf("%x",hasher)
+}
 
-	return hash
+func HexToBinary(h string) string {
+	bytearr, err := hex.DecodeString(h)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return bytesToBinary(bytearr)
+}
+
+func bytesToBinary(buffer []byte) string {
+	str := ""
+
+	for _, b := range buffer {
+		str += fmt.Sprintf("%08b", b)
+	}
+
+	return str
 }
