@@ -2,15 +2,16 @@ package bchain
 
 import (
 	"fmt"
-	"github.com/Anirudh9794/myblockchain/internal/pkg/hash"
 	"reflect"
+
+	"github.com/Anirudh9794/myblockchain/internal/pkg/hash"
 )
 
 type Blockchain struct {
 	Chain []Block
 }
 
-func createBlockchain() *Blockchain{
+func CreateBlockchain() *Blockchain {
 	bchain := Blockchain{
 		Chain: []Block{genesisBlock},
 	}
@@ -19,7 +20,7 @@ func createBlockchain() *Blockchain{
 
 }
 
-func (bchain *Blockchain) appendBlock(data string) {
+func (bchain *Blockchain) AppendBlock(data string) {
 	lastBlock := bchain.Chain[len(bchain.Chain)-1]
 
 	newBlock := mineBlock(data, lastBlock)
@@ -61,7 +62,7 @@ func IsValidChain(chain []Block) bool {
 
 func (bchain *Blockchain) ReplaceChain(chain []Block) {
 	// do not replace if new chain is shorter or if the new chain is invalid
-	if len(chain) < len(bchain.Chain) || !IsValidChain(chain){
+	if len(chain) < len(bchain.Chain) || !IsValidChain(chain) {
 		return
 	}
 

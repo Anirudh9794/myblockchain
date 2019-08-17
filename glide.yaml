@@ -1,2 +1,4 @@
 package: github.com/Anirudh9794/myblockchain
-import: []
+import:
+- package: github.com/go-redis/redis
+- package: github.com/julienschmidt/httprouter
